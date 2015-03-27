@@ -1,0 +1,52 @@
+[0m[[0mdebug[0m] [0m[0m
+[0m[[0mdebug[0m] [0mInitial source changes: [0m
+[0m[[0mdebug[0m] [0m	removed:Set()[0m
+[0m[[0mdebug[0m] [0m	added: Set(/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala)[0m
+[0m[[0mdebug[0m] [0m	modified: Set()[0m
+[0m[[0mdebug[0m] [0mRemoved products: Set()[0m
+[0m[[0mdebug[0m] [0mExternal API changes: API Changes: Set()[0m
+[0m[[0mdebug[0m] [0mModified binary dependencies: Set()[0m
+[0m[[0mdebug[0m] [0mInitial directly invalidated sources: Set(/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala)[0m
+[0m[[0mdebug[0m] [0m[0m
+[0m[[0mdebug[0m] [0mSources indirectly invalidated by:[0m
+[0m[[0mdebug[0m] [0m	product: Set()[0m
+[0m[[0mdebug[0m] [0m	binary dep: Set()[0m
+[0m[[0mdebug[0m] [0m	external source: Set()[0m
+[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala)[0m
+[0m[[0mdebug[0m] [0mRecompiling all 1 sources: invalidated sources (1) exceeded 50.0% of all sources[0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source to /Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/target/scala-2.10/classes...[0m
+[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.4[0m
+[0m[[0mdebug[0m] [0mGetting compiler-interface from component compiler for Scala 2.10.4[0m
+[0m[[0mdebug[0m] [0mRunning cached compiler d071267, interfacing (CompilerInterface) with Scala compiler version 2.10.4[0m
+[0m[[0mdebug[0m] [0mCalling Scala compiler with arguments  (CompilerInterface):[0m
+[0m[[0mdebug[0m] [0m	-bootclasspath[0m
+[0m[[0mdebug[0m] [0m	/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/classes:/Users/joeycao/.sbt/boot/scala-2.10.4/lib/scala-library.jar[0m
+[0m[[0mdebug[0m] [0m	-classpath[0m
+[0m[[0mdebug[0m] [0m	/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/target/scala-2.10/classes[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:3: not found: object utils[0m
+[0m[[31merror[0m] [0mimport utils._[0m
+[0m[[31merror[0m] [0m       ^[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:6: not found: object lexer[0m
+[0m[[31merror[0m] [0mimport lexer._[0m
+[0m[[31merror[0m] [0m       ^[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:7: not found: object ast[0m
+[0m[[31merror[0m] [0mimport ast._[0m
+[0m[[31merror[0m] [0m       ^[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:11: not found: type Context[0m
+[0m[[31merror[0m] [0m  def processOptions(args: Array[String]): Context = {[0m
+[0m[[31merror[0m] [0m                                           ^[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:13: not found: type Reporter[0m
+[0m[[31merror[0m] [0m    val reporter = new Reporter()[0m
+[0m[[31merror[0m] [0m                       ^[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:35: not found: value Context[0m
+[0m[[31merror[0m] [0m    Context(reporter = reporter, file = files.head, outDir = outDir)[0m
+[0m[[31merror[0m] [0m    ^[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:42: not found: value Lexer[0m
+[0m[[31merror[0m] [0m    val pipeline = Lexer andThen Parser[0m
+[0m[[31merror[0m] [0m                   ^[0m
+[0m[[31merror[0m] [0m/Users/joeycao/Documents/DD2488/lab3/koolc/src/main/scala/koolc/Main.scala:46: not found: value Printer[0m
+[0m[[31merror[0m] [0m    println(Printer(program))[0m
+[0m[[31merror[0m] [0m            ^[0m
+[0m[[31merror[0m] [0m8 errors found[0m
+[0m[[0mdebug[0m] [0mCompilation failed (CompilerInterface)[0m
+[0m[[31merror[0m] [0m(compile:[31mcompile[0m) Compilation failed[0m

@@ -1,0 +1,62 @@
+run build.sbt
+compile
+clear
+compile
+last
+compile
+last
+compile
+ls
+run --tokens ../testprograms/lab2/valid/positions.kool
+run --tokens ../../testprograms/lab2/valid/positions.kool
+run --ast ../../testprograms/lab3/valid/Simple.kool
+run --ast ../../testprograms/lab3/valid/GCD.kool
+run --ast ../../testprograms/lab3/valid/VehicleRent.kool
+run --tokens ../../testprograms/lab3/valid/VehicleRent.kool
+run --tokens ../../testprograms/lab3/valid/VehicleRent.kool > rent.txt
+run --tokens ../../testprograms/lab3/valid/VehicleRent.kool < a.txt
+run --tokens ../../testprograms/lab3/valid/VehicleRent.kool
+run --ast ../../testprograms/lab3/valid/VehicleRent.kool
+run --ast ../../testprograms/lab3/valid/Sudoku.kool
+run --tokens ../../testprograms/lab3/valid/Sudoku.kool
+compile
+run --ast ../../testprograms/lab3/valid/Simple.kool
+run --ast ../../testprograms/lab3/valid/VehicleRent.kool
+run --ast ../../testprograms/lab3/valid/BinarySearch.kool
+run --ast ../../testprograms/lab3/valid/VehicleRent.kool
+run --ast ../../testprograms/lab3/valid/Calender.kool
+run --ast ../../testprograms/lab3/valid/Calendar.kool
+run --tokens ../../testprograms/lab3/valid/Calendar.kool
+run --ast ../../testprograms/lab3/valid/Calendar.kool
+run --tokens ../../testprograms/lab3/valid/Calendar.kool
+run --ast ../../testprograms/lab3/valid/Calendar.kool
+run --ast ../../testprograms/lab3/valid/ComplexNumbers.kool
+run --ast ../../testprograms/lab3/valid/Life.kool
+run ../../testprograms/lab3/valid/Life.kool
+run --tokens ../../testprograms/lab3/valid/Life.kool
+run ../../testprograms/lab3/valid/Life.kool
+run ../../testprograms/lab3/invalid/XX-Fail02.kool
+run ../../testprograms/lab3/invalid/XX-Fail05.kool
+run ../../testprograms/lab3/invalid/XX-Fail08.kool
+run ../../testprograms/lab3/invalid/XX-Fail010.kool
+run ../../testprograms/lab3/invalid/XX-Fail10.kool
+run ../../testprograms/lab3/invalid/XX-Fail12.kool
+run ../../testprograms/lab3/invalid/XX-Fail15.kool
+run ../../testprograms/lab3/invalid/XX-Fail18.kool
+run ../../testprograms/lab3/invalid/XX-Fail24.kool
+run ../../testprograms/lab3/invalid/XX-Fail33.kool
+run ../../testprograms/lab3/invalid/XX-Fail24.kool
+run ../../testprograms/lab3/invalid/XX-Fail33.kool
+run ../../testprograms/lab3/invalid/XX-Fail18.kool
+run ../../testprograms/lab3/invalid/XX-Fail15.kool
+run ../../testprograms/lab3/invalid/XX-Fail12.kool
+run ../../testprograms/lab3/invalid/XX-Fail36.kool
+run ../../testprograms/lab3/invalid/XX-Fail39.kool
+run ../../testprograms/lab3/valid/99bottles.kool
+run ../../testprograms/lab3/valid/BinarySearch.kool
+run ../../testprograms/lab3/valid/Calendar.kool
+run ../../testprograms/lab3/valid/ComplexNumbers.kool
+run ../../testprograms/lab3/valid/DrawStuff.kool
+run ../../testprograms/lab3/valid/Factorial.kool
+run ../../testprograms/lab3/valid/Life.kool
+run ../../testprograms/lab3/valid/OptimalChange.kool
