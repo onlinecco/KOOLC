@@ -60,3 +60,16 @@ run ../../testprograms/lab3/valid/DrawStuff.kool
 run ../../testprograms/lab3/valid/Factorial.kool
 run ../../testprograms/lab3/valid/Life.kool
 run ../../testprograms/lab3/valid/OptimalChange.kool
+compile
+run ../testprograms/lab3/valid/Factorial.kool
+compile
+run ../testprograms/lab3/valid/Factorial.kool
+compile
+run ../testprograms/lab3/valid/Factorial.kool
+run ../testprograms/lab3/valid/HeapSort.kool
+run ../testprograms/lab3/valid/Factorial.kool
+run ../testprograms/lab3/valid/HeapSort.kool
+exit
+run ../testprograms/lab3/valid/HeapSort.kool
+run ../testprograms/lab3/valid/Calender.kool
+run ../testprograms/lab3/valid/Calendar.kool

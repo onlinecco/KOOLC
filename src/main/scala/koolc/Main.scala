@@ -5,6 +5,7 @@ import java.io.File
 
 import lexer._
 import ast._
+import analyzer._
 
 object Main {
       var printTokens = false
@@ -58,7 +59,8 @@ object Main {
 
     }
     else{
-    val pipeline = Lexer andThen Parser
+
+    val pipeline = Lexer andThen Parser andThen NameAnalysis
 
     val program = pipeline.run(ctx)(ctx.file)
 

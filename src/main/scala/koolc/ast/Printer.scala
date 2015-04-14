@@ -6,6 +6,7 @@ import Trees._
 
 object Printer {
   def apply(t: Program): String = {
+
   	var indent = "  "
   	var level = 0
     var result = new StringBuilder
@@ -33,7 +34,7 @@ object Printer {
 
 
     def printMainOb(main: Trees.MainObject){
-    	add(0, "object "+ main.id.value + " {", 1)
+    	add(0, "object "+ main.id.value + "#" +main.id.getSymbol.id +" {", 1)
     	add(0, "def main() : Unit = {", 1)
     	for(stat <- main.stats) printStat(stat)
     	add(-1, "}", 0)
@@ -43,10 +44,10 @@ object Printer {
 
     def printClassDecl(classDecl : Trees.ClassDecl){
     	val par = classDecl.parent match {
-    		case Some(id) => " extends " + id.value
+    		case Some(id) => " extends " + id.value + "#" +id.getSymbol.id
     		case None => ""
     	}
-    	add(0, "\nclass " + classDecl.id.value + par + " {" ,1)
+    	add(0, "\nclass " + classDecl.id.value + "#" + classDecl.getSymbol.id+ par + " {" ,1)
     	for(va <- classDecl.vars) printVarDecl(va)
     	for(m <- classDecl.methods) printMethodDecl(m)
     	add(-1, "}", 0)
@@ -72,19 +73,19 @@ object Printer {
  		}
  	}
     def printVarDecl(v: Trees.VarDecl){
-    	pfx(0, "var " + v.id.value + " : ")
+    	pfx(0, "var " + v.id.value + "#" +v.getSymbol.id +" : ")
     	printType(v.tpe)
     	end(0, ";")
     }
     
     def printMethodDecl(m: Trees.MethodDecl){
-    	pfx(0, "def " + m.id.value +"(")
+    	pfx(0, "def " + m.id.value + "#" + m.getSymbol.id +"(")
     	var first = true
     	for(arg <- m.args){
     		if(!first){
     			result ++= ", "
     		}else first = false
-    		result ++= arg.id.value + " : "
+    		result ++= arg.id.value + "#" + arg.getSymbol.id + " : "
     		printType(arg.tpe)
     	}
 
@@ -142,12 +143,12 @@ object Printer {
     			end(0, ");")
     		}
     		case Assign(id, expr) => {
-    			pfx(0, id.value + " = ")
+    			pfx(0, id.value + "#" +id.getSymbol.id + " = ")
     			printExpr(expr)
     			end(0, ";")
     		}
     		case ArrayAssign(id, index, expr) => {
-    			pfx(0, id.value + "[")
+    			pfx(0, id.value + "#" + id.getSymbol.id+ "[")
     			printExpr(index)
     			result ++= "] = "
     			printExpr(expr)
@@ -211,16 +212,18 @@ object Printer {
     	}
     	else{
     		expr match{
-    			case Identifier(value) => {result ++= value}
+    			case value:Identifier => {
+                    result ++= value.value + "#" + value.getSymbol.id 
+                }
     			case IntLit(value)		=> {result ++= value.toString}
     			case StringLit(value)	=> {result ++= '"' + value + '"'}
     			case True()				=> {result ++= "true"}
     			case False()			=> {result ++= "false"}
-    			case This()				=> {result ++= "this"}
+    			case thi :This				=> {result ++= "this" + "#" + thi.getSymbol.id}
     			case ArrayRead(arr, index)	=> {printMinPrec(arr, Prec.Last.id); result ++= "["; printExpr(index); result ++= "]"}
     			case ArrayLength(arr)	=> {printMinPrec(arr, Prec.Last.id); result ++= ".length"}
     			case MethodCall(obj, meth, args)	=> {printMinPrec(obj, Prec.Last.id); 
-    													result ++= "." + meth.value +"("; 
+    													result ++= "." + meth.value + "#??" +"("; 
     													var first = true
     													for(m <- args){
     														if(!first){
@@ -230,7 +233,7 @@ object Printer {
     													}
     													result ++= ")";
     													}
-    			case New(tpe)			=> {result ++= "new "+ tpe.value + "()"}
+    			case New(tpe)			=> {result ++= "new "+ tpe.value + "#" + tpe.getSymbol.id+"()"}
     			case Not(expr)			=> {result ++= "!"; printMinPrec(expr, Prec.Last.id)}
     			case NewIntArray(size)	=> {result ++= "new Int["; printMinPrec(size, Prec.Last.id); result ++= "]"}
     			case _ => None

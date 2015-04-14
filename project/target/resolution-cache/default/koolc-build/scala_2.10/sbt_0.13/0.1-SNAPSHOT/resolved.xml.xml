@@ -4,7 +4,7 @@
 		module="koolc-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20150324005756"
+		publication="20150408144317"
 		e:sbtVersion="0.13" e:scalaVersion="2.10"
 	>
 		<description>

@@ -63,8 +63,8 @@ object Parser extends Pipeline[Iterator[Token], Program] {
     }
 
     def expectId : Identifier = {
-
-      new Identifier(expect(Tokens.IDKIND).asInstanceOf[Tokens.ID].value)
+      val tok = currentToken
+      (new Identifier(expect(Tokens.IDKIND).asInstanceOf[Tokens.ID].value)).setPos(tok)
     }
 
     def first(kind: Tree) : Set[TokenKind] = {
@@ -86,13 +86,15 @@ object Parser extends Pipeline[Iterator[Token], Program] {
     }
 
     def parseBlock : Block = {
+      val tok = currentToken
       eat(Tokens.LBRACE)
       val block = parseRecursive(Block(null),()=>parseStatement)
       eat(Tokens.RBRACE)
-      new Block(block)
+      (new Block(block)).setPos(tok)
     }
 
     def parseMainObject : MainObject = {
+      val tok = currentToken
       eat(Tokens.OBJECT)
       val id = expectId
       eat(Tokens.LBRACE)
@@ -106,10 +108,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
       val block = parseBlock
       eat(Tokens.RBRACE)
 
-      new MainObject(id,block.stats)
+      (new MainObject(id,block.stats)).setPos(tok)
     }
 
     def parseClassDeclaration : ClassDecl = {
+      val tok = currentToken
       eat(Tokens.CLASS)
       val id1 = expectId
       val ext = if(currentToken.kind == Tokens.EXTENDS) {
@@ -124,11 +127,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
       val medDecs = parseRecursive(MethodDecl(null,null,null,null,null,null),()=>parseMethodDeclaration)
       eat(Tokens.RBRACE)
 
-      new ClassDecl(id1,ext,varDecs, medDecs)
+      (new ClassDecl(id1,ext,varDecs, medDecs)).setPos(tok)
     }
 
     def parseType = {
-      
+      val tok = currentToken
       currentToken.kind match {
 
         case Tokens.IDKIND => expectId
@@ -151,48 +154,52 @@ object Parser extends Pipeline[Iterator[Token], Program] {
           }
 
           if(check) {
-            new IntArrayType()
+            (new IntArrayType()).setPos(tok)
           }
           else{
-            new IntType()
+            (new IntType()).setPos(tok)
           }
         } 
         case Tokens.BOOLEAN =>{
           readToken
-         new BooleanType()
+         (new BooleanType()).setPos(tok)
        }
         case Tokens.STRING =>{
           readToken
-         new StringType()
+         (new StringType()).setPos(tok)
        }
         case _ => throw new NoSuchElementException("No such Type " + currentToken.kind)
 
       }
     }
     def parseVarDeclaration : VarDecl = {
+      val tok = currentToken
       eat(Tokens.VAR)
       val id = expectId
       eat(Tokens.COLON)
       val type1 = parseType
       eat(Tokens.SEMICOLON)
 
-      new VarDecl(type1, id)
+      (new VarDecl(type1, id)).setPos(tok)
 
     }
 
     def parseMethodFormal : List[Formal] = {
+
       if(currentToken.kind == Tokens.COMMA){
         readToken
+        val tok = currentToken
         val id = expectId
         eat(Tokens.COLON)
         val type3 = parseType
-        new Formal(type3,id) :: parseMethodFormal
+        (new Formal(type3,id)).setPos(tok) :: parseMethodFormal
 
       }
-      Nil
+      else Nil
 
     }
     def parseMethodDeclaration : MethodDecl = {
+        val tok = currentToken
         eat(Tokens.DEF)
         val id = expectId
         var list1 : List[Formal] = Nil
@@ -201,10 +208,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
             Nil
           }
           else{
+            val tok2 = currentToken
             val id = expectId
             eat(Tokens.COLON)
             val type2 = parseType
-            list1 = List(new Formal(type2, id))
+            list1 = List((new Formal(type2, id)).setPos(tok2))
             if(currentToken.kind == Tokens.COMMA){
               list1 = list1 ::: parseMethodFormal
             }
@@ -223,10 +231,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
         eat(Tokens.SEMICOLON)
         eat(Tokens.RBRACE)
 
-        new MethodDecl(returnType, id, list1, varD,stat,exp)
+        (new MethodDecl(returnType, id, list1, varD,stat,exp)).setPos(tok)
     }
 
     def parseStatement : StatTree= {
+      val tok = currentToken
       currentToken.kind match {
         case Tokens.WHILE => {
           eat(Tokens.WHILE)
@@ -235,7 +244,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
           eat(Tokens.RPAREN)
           val then1 = parseStatement
 
-          new While(cond,then1)
+          (new While(cond,then1)).setPos(tok)
         }
         case Tokens.PRINTLN => {
           eat(Tokens.PRINTLN)
@@ -244,7 +253,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
           eat(Tokens.RPAREN)
           eat(Tokens.SEMICOLON)
 
-          new Println(para)
+          (new Println(para)).setPos(tok)
         }
         case Tokens.LBRACE => parseBlock
         case Tokens.IF => {
@@ -261,7 +270,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
           }
           else None
 
-          new If(cond, then1, elsec)
+          (new If(cond, then1, elsec)).setPos(tok)
         }
 
         case Tokens.IDKIND => {
@@ -271,7 +280,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
               readToken
               val exp = parseExpression
               eat(Tokens.SEMICOLON)
-              new Assign(id,exp)
+              (new Assign(id,exp)).setPos(tok)
             }
             case Tokens.LBRACKET => {
               readToken
@@ -280,7 +289,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
               eat(Tokens.EQSIGN)
               val exp = parseExpression
               eat(Tokens.SEMICOLON)
-              new ArrayAssign(id,index,exp)
+              (new ArrayAssign(id,index,exp)).setPos(tok)
 
             }
             case _ => throw new NoSuchElementException("BROKEN ID clause")
@@ -294,6 +303,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
       parseExpressionPrecedence(0)
     }
     def parseExpressionPrecedence(level: Int) : ExprTree = {
+      val tok = currentToken
       var lhs = parseSimpleExpression
 
       var canParseMore = true
@@ -308,15 +318,15 @@ object Parser extends Pipeline[Iterator[Token], Program] {
             val rhs = parseExpressionPrecedence(precedenceLevels(t)+1)
 
             t match {
-              case Tokens.BANG     => new Not(rhs)
-              case Tokens.AND      => new And (lhs, rhs)
-              case Tokens.OR       => new Or  (lhs, rhs)
-              case Tokens.EQUALS   => new Equals (lhs, rhs)
-              case Tokens.LESSTHAN => new LessThan (lhs, rhs)
-              case Tokens.PLUS     => new Plus (lhs, rhs)
-              case Tokens.MINUS    => new Minus (lhs, rhs)
-              case Tokens.TIMES    => new Times (lhs, rhs)
-              case Tokens.DIV      => new Div (lhs, rhs)
+              case Tokens.BANG     => (new Not(rhs)).setPos(tok)
+              case Tokens.AND      => (new And (lhs, rhs)).setPos(tok)
+              case Tokens.OR       => (new Or  (lhs, rhs)).setPos(tok)
+              case Tokens.EQUALS   => (new Equals (lhs, rhs)).setPos(tok)
+              case Tokens.LESSTHAN => (new LessThan (lhs, rhs)).setPos(tok)
+              case Tokens.PLUS     => (new Plus (lhs, rhs)).setPos(tok)
+              case Tokens.MINUS    => (new Minus (lhs, rhs)).setPos(tok)
+              case Tokens.TIMES    => (new Times (lhs, rhs)).setPos(tok)
+              case Tokens.DIV      => (new Div (lhs, rhs)).setPos(tok)
 
               case _ => {
                 throw new NoSuchElementException("Error character" + t)
@@ -328,14 +338,14 @@ object Parser extends Pipeline[Iterator[Token], Program] {
             readToken
             val exp = parseExpression
             eat(Tokens.RBRACKET)
-            new ArrayRead(lhs,exp)
+            (new ArrayRead(lhs,exp)).setPos(tok)
           }
           case Tokens.DOT => {
             readToken
             currentToken.kind match {
               case Tokens.LENGTH => {
                 readToken
-                new ArrayLength(lhs)
+                (new ArrayLength(lhs)).setPos(tok)
               }
               case Tokens.IDKIND => {
                 val id = expectId
@@ -345,7 +355,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
                   list = parseExpression :: parseMoreExpression
                 }
                 eat(Tokens.RPAREN)
-                new MethodCall(lhs,id,list)
+                (new MethodCall(lhs,id,list)).setPos(tok)
               }
             
               case _ => throw new NoSuchElementException("Wrong token following dot")
@@ -369,26 +379,27 @@ object Parser extends Pipeline[Iterator[Token], Program] {
     }
 
     def parseSimpleExpression : ExprTree = {
+      val tok = currentToken
       currentToken.kind match{
         case Tokens.INTLITKIND => {
            val str = currentToken.asInstanceOf[Tokens.INTLIT].value
           readToken
-          new IntLit(str)
+          (new IntLit(str)).setPos(tok)
 
         }
         case Tokens.STRLITKIND => {
           val str = currentToken.asInstanceOf[Tokens.STRLIT].value
           readToken
-          new StringLit(str)
+          (new StringLit(str)).setPos(tok)
 
         }
         case Tokens.TRUE => {
           readToken
-          new True
+          (new True).setPos(tok)
         }
         case Tokens.FALSE => {
           readToken
-          new False
+          (new False).setPos(tok)
         }
         case Tokens.IDKIND => {
           expectId
@@ -396,7 +407,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
         }
         case Tokens.THIS => {
           readToken
-          new This
+          (new This).setPos(tok)
         }
         case Tokens.NEW => {
           readToken
@@ -406,13 +417,13 @@ object Parser extends Pipeline[Iterator[Token], Program] {
               eat(Tokens.LBRACKET)
               val exp = parseExpression
               eat(Tokens.RBRACKET)
-              new NewIntArray(exp)
+              (new NewIntArray(exp)).setPos(tok)
             }
             case Tokens.IDKIND => {
               val id = expectId
               eat(Tokens.LPAREN)
               eat(Tokens.RPAREN)
-              new New(id)
+              (new New(id)).setPos(tok)
             }
             case _ => throw new NoSuchElementException("Invalid New")
           }
@@ -427,11 +438,12 @@ object Parser extends Pipeline[Iterator[Token], Program] {
       }
     }
     def parseGoal: Program = {
+      val tok = currentToken
       val main = parseMainObject
       val classL = parseRecursive(ClassDecl(null,null,null,null),()=>parseClassDeclaration)
       eat(Tokens.EOF)
 
-      new Program(main, classL)
+      (new Program(main, classL)).setPos(tok)
     }
 
     readToken

@@ -1,10 +1,10 @@
-[0m[[0minfo[0m] [0mRunning koolc.Main ../../testprograms/lab3/valid/OptimalChange.kool[0m
+[0m[[0minfo[0m] [0mRunning koolc.Main ../testprograms/lab3/valid/Calendar.kool[0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
-[0m[[0mdebug[0m] [0m	/Users/joeycao/Documents/DD2488/lab3/koolc/target/scala-2.11/classes[0m
+[0m[[0mdebug[0m] [0m	/Users/joeycao/Documents/DD2488/koolc/target/scala-2.11/classes[0m
 [0m[[0mdebug[0m] [0m	/Users/joeycao/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.4.jar[0m
-[0m[[0mdebug[0m] [0mWaiting for thread run-main-29 to terminate.[0m
-[0m[[0mdebug[0m] [0m	Thread run-main-29 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread run-main-e to terminate.[0m
+[0m[[0mdebug[0m] [0m	Thread run-main-e exited.[0m
 [0m[[0mdebug[0m] [0mInterrupting remaining threads (should be all daemons).[0m
 [0m[[0mdebug[0m] [0mSandboxed run complete..[0m
 [0m[[0mdebug[0m] [0mExited with code 0[0m
