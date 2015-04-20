@@ -67,25 +67,25 @@ object Printer {
  			case IntArrayType() =>{
  				result ++= "Int[]"
  			}
- 			case Identifier(x) => {
- 				result ++= x
+ 			case x:Identifier => {
+ 				result ++= x.value + "#" + x.getSymbol.id
  			}
  		}
  	}
     def printVarDecl(v: Trees.VarDecl){
-    	pfx(0, "var " + v.id.value + "#" +v.getSymbol.id +" : ")
+    	pfx(0, "var " + v.id.value + "#" +v.id.getSymbol.id +" : ")
     	printType(v.tpe)
     	end(0, ";")
     }
     
     def printMethodDecl(m: Trees.MethodDecl){
-    	pfx(0, "def " + m.id.value + "#" + m.getSymbol.id +"(")
+    	pfx(0, "def " + m.id.value + "#" + m.id.getSymbol.id +"(")
     	var first = true
     	for(arg <- m.args){
     		if(!first){
     			result ++= ", "
     		}else first = false
-    		result ++= arg.id.value + "#" + arg.getSymbol.id + " : "
+    		result ++= arg.id.value + "#" + arg.id.getSymbol.id + " : "
     		printType(arg.tpe)
     	}
 

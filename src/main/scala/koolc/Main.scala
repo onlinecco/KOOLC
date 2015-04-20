@@ -60,7 +60,10 @@ object Main {
     }
     else{
 
-    val pipeline = Lexer andThen Parser andThen NameAnalysis
+    val pipeline = Lexer andThen
+                   Parser andThen 
+                   NameAnalysis andThen
+                   TypeChecking
 
     val program = pipeline.run(ctx)(ctx.file)
 

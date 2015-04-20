@@ -73,3 +73,8 @@ exit
 run ../testprograms/lab3/valid/HeapSort.kool
 run ../testprograms/lab3/valid/Calender.kool
 run ../testprograms/lab3/valid/Calendar.kool
+compile
+run ../testprograms/lab3/valid/Calendar.kool
+run ../testprograms/lab3/valid/99bottles.kool
+run ../testprograms/lab3/valid/Calendar.kool
+exit
