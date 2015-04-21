@@ -150,7 +150,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
               throw new NoSuchElementException("Missing right bracket")
             }
             }
-            false
+            else false
           }
 
           if(check) {
@@ -434,6 +434,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
           eat(Tokens.RPAREN)
           content
         }
+        case Tokens.BANG => null
         case _ => throw new NoSuchElementException("NO LHS FOUND")
       }
     }

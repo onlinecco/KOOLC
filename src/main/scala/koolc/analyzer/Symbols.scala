@@ -45,20 +45,20 @@ object Symbols {
   class ClassSymbol(val name: String) extends Symbol {
     var parent: Option[ClassSymbol] = None
     var methods = Map[String,MethodSymbol]()
-    var members = Map[String,Symbol]()
+    var members = Map[String,VariableSymbol]()
 
     def lookupMethod(n: String): Option[MethodSymbol] = methods.get(n)
-    def lookupVar(n: String): Option[Symbol] = members.get(n)
+    def lookupVar(n: String): Option[VariableSymbol] = members.get(n)
   }
 
   class MethodSymbol(val name: String, val classSymbol: ClassSymbol) extends Symbol {
-    var params = Map[String,Symbol]()
-    var members = Map[String,Symbol]()
-    var argList: List[Symbol] = Nil
+    var params = Map[String,VariableSymbol]()
+    var members = Map[String,VariableSymbol]()
+    var argList: List[VariableSymbol] = Nil
     var overridden : Option[MethodSymbol] = None
     var returnT : TypeTree = IntType()
 
-    def lookupVar(n: String): Option[Symbol] = {
+    def lookupVar(n: String): Option[VariableSymbol] = {
       var paraRes = params.get(n)
       var memRes = members.get(n)
       if(paraRes == None){

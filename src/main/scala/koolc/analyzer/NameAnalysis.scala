@@ -42,11 +42,13 @@ object NameAnalysis extends Pipeline[Program, Program] {
             case Some(p) => {
                 globe.lookupClass(p.value) match{
                     case None => error("a class name is used as a symbol (as parent class or type, for instance) but is not declared", c)
-                    case Some(_) => {
+                    case s => {
                         //TODO check for cycles
                         if(p.value == c.id.value)
                             error("the inheritance graph has a cycle",c)
                         else{
+                        sym.parent = s
+                        p.setSymbol(s.get)
                         var parentMap = Map(c.id.value -> 0, p.value -> 0)
                         var cur = globe.lookupClass(p.value)
                         var break = false
@@ -72,15 +74,19 @@ object NameAnalysis extends Pipeline[Program, Program] {
             case None =>
         }
 
-        c.vars.foreach(processVarInClass(_, sym))
-        c.methods.foreach(processMethodsInClass(_, sym))
+
     }
 
+    def processContentsInClass(c : ClassDecl) : Unit = {
+        c.vars.foreach(processVarInClass(_, c.getSymbol))
+        c.methods.foreach(processMethodsInClass(_, c.getSymbol))
+    }
     def checkParentClassOverload(m : MethodSymbol, s : ClassSymbol) : Unit = {
 
         if(s.parent != None){
             s.parent.get.lookupMethod(m.name) match {
                 case Some(a) => {
+                    //println("m name: "+ m.name+"m length: "+m.argList.length +"a length: "+ a.argList.length+", "+ m.params.keySet + "a keyset: " +a.params.keySet)
                     if(m.argList.length != a.argList.length || !m.params.keySet.equals(a.params.keySet)){
                         error("a method overloads a method in its super class",m)
                     }
@@ -108,8 +114,9 @@ object NameAnalysis extends Pipeline[Program, Program] {
 
 
         //check overloading and overriding in super class
-        checkParentClassOverload(m.getSymbol,s)
+
         m.args.foreach(processArgs(_,m.getSymbol))
+        checkParentClassOverload(m.getSymbol,s)
         m.vars.foreach(processVarsInMethod(_,m.getSymbol))
         m.stats.foreach(processStat(_,m.getSymbol))
         processExpr(m.retExpr,m.getSymbol)
@@ -136,7 +143,7 @@ object NameAnalysis extends Pipeline[Program, Program] {
                 a.setSymbol(p)
                 a.id.setSymbol(p)
                 m.params += (a.id.value -> p)
-                m.argList = p :: m.argList
+                m.argList = m.argList :+ p
             }
         }
     }
@@ -240,6 +247,7 @@ object NameAnalysis extends Pipeline[Program, Program] {
             case Some(result) => id.setSymbol(result)
         }
     }else{
+
         globe.lookupClass(key) match{
             case Some(result4) => id.setSymbol(result4)
             case None => error("an identifier "+ key +" is used as a class symbol but is not declared",id)
@@ -303,7 +311,8 @@ object NameAnalysis extends Pipeline[Program, Program] {
                 processExpr(arr,m)
             }
             case New(tpe) => {
-                processExpr(tpe,m)
+
+                processExpr(tpe, null)
             }
             case NewIntArray(size) =>processExpr(size,m)
             case Not(e) => {
@@ -357,6 +366,7 @@ object NameAnalysis extends Pipeline[Program, Program] {
         globe.mainClass = mainSym
             //Set the remainingClass
         prog.classes.foreach(processClass(_))
+        prog.classes.foreach(processContentsInClass(_))
         prog.main.stats.foreach(processStat(_,null))
    
     }

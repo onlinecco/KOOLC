@@ -68,12 +68,22 @@ object Types {
 
       case o if o == anyObject => true
       case TObject(c) if c == classSymbol => true
+      case TObject(d) =>{
+        isAncestor(classSymbol,d)
+      }
 
       case _ => false
     }
     override def toString = classSymbol.name
   }
 
+  def isAncestor(c:ClassSymbol, d: ClassSymbol) : Boolean = {
+    if(c.parent != None){
+      if(c.parent.get == d) true
+      else isAncestor(c.parent.get,d)
+    }
+    else false
+  }
   // special object to implement the fact that all objects are its subclasses
   val anyObject = TObject(new ClassSymbol("Object"))
 }

@@ -16,46 +16,50 @@ object TypeChecking extends Pipeline[Program, Program] {
     var curClassType = Types.anyObject
 
     def getObjectSymbol(expr: ExprTree) : ClassSymbol = {
+
             expr match {
 
         case MethodCall(obj,meth,args) => {
 
-          getObjectSymbol(obj)
+          tcMethodCall(expr,obj,meth,args) match{
+            case TObject(c) => c
+            case _ => {
+              error("Type Error: Methods called on non-object variable")
+              null
+            }
+          }
 
         }
         
-        case exp : Identifier => exp.getSymbol.asInstanceOf[ClassSymbol]
+        case exp : Identifier => {
+          exp.getSymbol match {
+            case c:ClassSymbol => c
+            case v:VariableSymbol => {
+              v.getType match{
+                case TObject(cs) => cs
+                case _=> sys.error("Internal Error: methods called on non-object variable")
+              }
+            }
+            case _ => sys.error("Interal Error")
+          }
+        }
         case This() => curClassType.classSymbol
         case New(exp) => exp.getSymbol.asInstanceOf[ClassSymbol]
         case _ => sys.error("Uncaught object symbol")
 
       }
     }
-    def tcExpr(expr: ExprTree, expected: Type*): Type = {
-      val tpe: Type = { // TODO: Compute type for each kind of expression
-        expr match{
-          case MethodCall(obj,meth,args) => {
-
-            if(!tcExpr(obj).isSubTypeOf(Types.anyObject)){
-             error("Type Error: Undeclared object")
-             TError
-            }
-            else{
-
-            getObjectSymbol(obj) match{
-                  case b: ClassSymbol => {
-                    b.lookupMethod(meth.value) match {
-                      case None => {
-                        error("Type Error : Undeclared method " + meth.value)
-                        TError
-                      }
-                      case Some(m) => {
-                        if(args.length != m.argList.length){
+    def tcMethodArg(expr: ExprTree,args:List[ExprTree], m : MethodSymbol): Type = {
+                              if(args.length != m.argList.length){
                          error("Type Error: Incorrect number of arguments")
                          TError
                         }
                         else{
+                          //println("argList: ")
+                          //for(a <- m.argList){println(a.name)}
+                          //println("-OVER-")
                           for( (arg1,arg2) <- m.argList zip args ){
+                            //println("arg2:"+arg2+tcExpr(arg2)+"arg1: "+arg1.name+arg1.getType)
                             if(!tcExpr(arg2).isSubTypeOf(arg1.getType)){
                              error("Type Error: Argument type does not match")
                              TError
@@ -71,7 +75,31 @@ object TypeChecking extends Pipeline[Program, Program] {
                           expr.setType(result)
                           result
                         }
+    }
+    def tcMethodCall(expr: ExprTree,obj: ExprTree, meth: Identifier, args: List[ExprTree]): Type = {
+                  if(!tcExpr(obj).isSubTypeOf(Types.anyObject)){
+             error("Type Error: Undeclared object")
+             TError
+            }
+            else{
+
+            getObjectSymbol(obj) match{
+                  case b: ClassSymbol => {
+                    b.lookupMethod(meth.value) match {
+                      case None if b.parent == None => {
+                        error("Type Error : Undeclared method " + meth.value)
+                        TError
                       }
+                      case None if b.parent != None => {
+                        b.parent.get.lookupMethod(meth.value) match{
+                          case None => {
+                            error("Type Error : Undeclared method (in its parent)" + meth.value)
+                            TError
+                          }
+                          case Some(m) => tcMethodArg(expr,args,m)
+                        }
+                      }
+                      case Some(m) => tcMethodArg(expr,args,m)
                     }
                   }
 
@@ -79,6 +107,13 @@ object TypeChecking extends Pipeline[Program, Program] {
                 }
               
             }
+    }
+    def tcExpr(expr: ExprTree, expected: Type*): Type = {
+      val tpe: Type = { // TODO: Compute type for each kind of expression
+        expr match{
+          case MethodCall(obj,meth,args) => {
+
+            tcMethodCall(expr,obj,meth,args)
           }
           case And(lhs,rhs) => {
             tcExpr(lhs)
@@ -256,12 +291,13 @@ object TypeChecking extends Pipeline[Program, Program] {
           }
         }
         case Assign(id,expr) => {
-
+          //println("expr: " + tcExpr(expr) + ",id: " + id.getType)
           if(!tcExpr(expr).isSubTypeOf(id.getType)) error("Type error: Invalid assignment", stat)
         }
         case ArrayAssign(id,index,expr) => {
+          tcExpr(id, TIntArray)
           tcExpr(index,TInt)
-          tcExpr(expr, TIntArray)
+          tcExpr(expr, TInt)
         }
         case _ => 
       }
@@ -348,6 +384,7 @@ object TypeChecking extends Pipeline[Program, Program] {
     }
 
     tcProg
+    terminateIfErrors
     prog
   }
 
