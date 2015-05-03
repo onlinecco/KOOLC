@@ -6,6 +6,7 @@ import java.io.File
 import lexer._
 import ast._
 import analyzer._
+import code._
 
 object Main {
       var printTokens = false
@@ -63,11 +64,14 @@ object Main {
     val pipeline = Lexer andThen
                    Parser andThen 
                    NameAnalysis andThen
-                   TypeChecking
+                   TypeChecking 
 
     val program = pipeline.run(ctx)(ctx.file)
 
     println(Printer.apply(program))
+
+    val backend = pipeline andThen CodeGeneration
+    backend.run(ctx)(ctx.file)
     }
 
   }

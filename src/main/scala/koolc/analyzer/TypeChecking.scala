@@ -49,7 +49,7 @@ object TypeChecking extends Pipeline[Program, Program] {
 
       }
     }
-    def tcMethodArg(expr: ExprTree,args:List[ExprTree], m : MethodSymbol): Type = {
+    def tcMethodArg(meth: Identifier,expr: ExprTree,args:List[ExprTree], m : MethodSymbol): Type = {
                               if(args.length != m.argList.length){
                          error("Type Error: Incorrect number of arguments")
                          TError
@@ -72,6 +72,7 @@ object TypeChecking extends Pipeline[Program, Program] {
                             case StringType() => TString
                             case i : Identifier => i.getType
                           }
+                          meth.setSymbol(m)
                           expr.setType(result)
                           result
                         }
@@ -96,10 +97,10 @@ object TypeChecking extends Pipeline[Program, Program] {
                             error("Type Error : Undeclared method (in its parent)" + meth.value)
                             TError
                           }
-                          case Some(m) => tcMethodArg(expr,args,m)
+                          case Some(m) => tcMethodArg(meth,expr,args,m)
                         }
                       }
-                      case Some(m) => tcMethodArg(expr,args,m)
+                      case Some(m) => tcMethodArg(meth,expr,args,m)
                     }
                   }
 
@@ -331,7 +332,9 @@ object TypeChecking extends Pipeline[Program, Program] {
       med.stats.foreach(tcStat(_))
       installTypeOnReturn(med.retType)
       tcExpr(med.retExpr).isSubTypeOf(med.retType.getType)
+
       val m = med.getSymbol
+      m.setType(med.retType.getType)
 
       m.overridden match{
         case None =>

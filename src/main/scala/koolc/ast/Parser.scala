@@ -147,7 +147,8 @@ object Parser extends Pipeline[Iterator[Token], Program] {
             else
             {
               readToken
-              throw new NoSuchElementException("Missing right bracket")
+              error("Missing right bracket")
+              false //or fatal
             }
             }
             else false
@@ -168,7 +169,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
           readToken
          (new StringType()).setPos(tok)
        }
-        case _ => throw new NoSuchElementException("No such Type " + currentToken.kind)
+        case _ => {
+          readToken
+          error("No such Type " + currentToken.kind)
+          null
+        }
 
       }
     }
@@ -292,7 +297,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
               (new ArrayAssign(id,index,exp)).setPos(tok)
 
             }
-            case _ => throw new NoSuchElementException("BROKEN ID clause")
+            case _ =>{ 
+              readToken
+              error("BROKEN ID clause")
+              null
+          }
           }
         }
         case _ => null
@@ -329,7 +338,7 @@ object Parser extends Pipeline[Iterator[Token], Program] {
               case Tokens.DIV      => (new Div (lhs, rhs)).setPos(tok)
 
               case _ => {
-                throw new NoSuchElementException("Error character" + t)
+                error("Error character" + t)
                 null 
               }
             }
@@ -358,7 +367,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
                 (new MethodCall(lhs,id,list)).setPos(tok)
               }
             
-              case _ => throw new NoSuchElementException("Wrong token following dot")
+              case _ => {
+                readToken
+                error("Wrong token following dot")
+                null
+              }
             }
           }
           case _ => {
@@ -425,7 +438,10 @@ object Parser extends Pipeline[Iterator[Token], Program] {
               eat(Tokens.RPAREN)
               (new New(id)).setPos(tok)
             }
-            case _ => throw new NoSuchElementException("Invalid New")
+            case _ => {
+              error("Invalid New")
+              null
+            }
           }
         }
         case Tokens.LPAREN => {
@@ -435,7 +451,11 @@ object Parser extends Pipeline[Iterator[Token], Program] {
           content
         }
         case Tokens.BANG => null
-        case _ => throw new NoSuchElementException("NO LHS FOUND")
+        case _ => {
+          
+          error("NO LHS FOUND")
+          null
+        }
       }
     }
     def parseGoal: Program = {
